@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Choice Question</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .option {
+            margin: 5px 0;
+        }
+        .submit-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="question">{{ question }}</h1>
+    <form action="/submit" method="post">
+        {% for option in options %}
+            <div class="option">
+                <input type="checkbox" id="option{{ loop.index }}" name="options" value="{{ option }}">
+                <label for="option{{ loop.index }}">{{ option }}</label>
+            </div>
+        {% endfor %}
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+</body>
+</html>

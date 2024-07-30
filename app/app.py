@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import os
 import pymysql
 
@@ -14,6 +14,60 @@ def get_db_connection():
     )
     return connection
 
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')  # Note: In a real application, never store plain passwords
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    # Check if the user already exists
+    cursor.execute('SELECT * FROM user WHERE name = %s', (username,))
+    if cursor.fetchone():
+        connection.close()
+        return jsonify({"message": "Username already exists"}), 400
+
+    # Insert new user
+    cursor.execute(
+        "INSERT INTO user (name, password) VALUES (%s, %s)",
+        (username, password)
+    )
+    connection.commit()
+    connection.close()
+    
+    return jsonify({"message": "User created successfully!"}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    # Check if the user exists and the password is correct
+    cursor.execute('SELECT * FROM user WHERE name = %s AND password = %s', (username, password))
+    user = cursor.fetchone()
+    connection.close()
+    
+    if user:
+        return jsonify({"message": "Login successful!"}), 200
+    else:
+        return jsonify({"message": "Invalid username or password"}), 401
+
+@app.route('/question')
+def question():
+    question_text = "What is your favorite programming language?"
+    options = ["Python", "JavaScript", "Java", "C++", "Ruby", "Go"]
+    return render_template('question.html', question=question_text, options=options)
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    selected_options = request.form.getlist('options')
+    return f"Selected options: {', '.join(selected_options)}"
 
 # Create a new record
 @app.route('/questions', methods=['POST'])
