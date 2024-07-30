@@ -38,7 +38,6 @@ services:
     volumes:
       - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf # change between dev and prod
       - /etc/letsencrypt:/etc/letsencrypt
-      - ./nginx/html:/usr/share/nginx/html
     depends_on:
       - web
     networks:
