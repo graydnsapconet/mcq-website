@@ -1,0 +1,42 @@
+# Ignore Python bytecode
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignore Flask environment files
+instance/
+.env
+
+# Ignore Docker files
+*.log
+*.pid
+*.sock
+
+# Ignore Docker-related directories
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Ignore MySQL data
+mysql-data/
+mysql-data-dump/
+
+# Ignore Nginx logs and temporary files
+nginx/logs/
+nginx/tmp/
+
+# Ignore virtual environment directory
+venv/
+env/
+
+# Ignore IDE/editor configuration files
+.vscode/
+.idea/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore other possible local or sensitive files
+*.env
+*.local
