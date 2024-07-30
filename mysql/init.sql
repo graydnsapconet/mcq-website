@@ -13,17 +13,17 @@ CREATE TABLE `questions` (
   `option6` text,
   `correct` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=255 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=255 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
+  `password` varchar(60) DEFAULT NULL,
   `totalanswered` int DEFAULT NULL,
   `totalcorrect` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `user_question`;
 CREATE TABLE `user_question` (
@@ -34,7 +34,7 @@ CREATE TABLE `user_question` (
   `correct` int DEFAULT NULL,
   PRIMARY KEY (`user_id`,`question_id`),
   KEY `question_id` (`question_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO questions (id, question, option1, option2, option3, option4, option5, option6, correct) VALUES (1, "Your client is considering implementing S/4HANA in the cloud and is not sure which deployment option is the best fit. They need the full functional scope of SAP S/4HANA along with the ability to customize, modify, and extend it. What cloud deployment option satisfies these requirements?", "1.) SAP S/4HANA Cloud, private option", "2.) SAP S/4HANA private managed cloud", "3.) SAP S/4HANA Cloud", "4.) SAP S/4HANA", NULL, NULL, "2");
 INSERT INTO questions (id, question, option1, option2, option3, option4, option5, option6, correct) VALUES (2, "In SAP Integration Advisor, how can you group related information into reusable segments?", "1.) By creating matching groups for nodes", "2.) By qualifying nodes", "3.) By assigning code lists to the leaf nodes", "4.) By providing multiple payload data sets", NULL, NULL, "3");

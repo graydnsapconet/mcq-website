@@ -23,6 +23,7 @@ services:
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_NAME=cpidb1
+      - SESSION_KEY=${SESSION_KEY}
     volumes:
       - ./app:/app
     networks:
@@ -36,7 +37,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf # change between dev and prod
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf # change between dev and prod
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - web
