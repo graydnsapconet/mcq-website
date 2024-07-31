@@ -3,6 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from flask_bcrypt import Bcrypt
 import os
 import pymysql
+import requests
 
 app = Flask(__name__)
 
@@ -15,6 +16,8 @@ def get_db_connection():
         database=os.getenv('DATABASE_NAME')
     )
     return connection
+
+QUESTION_ENGINE_URL = 'http://question-engine:5003/api'
 
 # Initialize Flask-Login and bcrypt
 login_manager = LoginManager()
@@ -108,31 +111,6 @@ def submit():
     selected_options = request.form.getlist('options')
     return f"Selected options: {', '.join(selected_options)}"
 
-# Create a new record
-@app.route('/questions', methods=['POST'])
-@login_required
-def create_question():
-    data = request.json
-    question = data.get('question')
-    option1 = data.get('option1')
-    option2 = data.get('option2')
-    option3 = data.get('option3')
-    option4 = data.get('option4')
-    option5 = data.get('option5')
-    option6 = data.get('option6')
-    correct_answer = data.get('correct')
-
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute(
-        "INSERT INTO questions (question, option1, option2, option3, option4, option5, option6, correct) VALUES (%s, %s, %s, %s, %s,%s, %s, %s)",
-        (question, option1, option2, option3, option4, option5, option6, correct_answer)
-    )
-    connection.commit()
-    connection.close()
-    
-    return jsonify({"message": "Question created successfully!"}), 201
-
 # Read all records
 @app.route('/questions', methods=['GET'])
 def get_questions():
@@ -147,56 +125,23 @@ def get_questions():
     else:
         return jsonify({"message": "No data found"}), 404
 
-# Read a specific record by ID
-@app.route('/questions/<int:id>', methods=['GET'])
-def get_question(id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM questions WHERE id = %s', (id,))
-    data = cursor.fetchone()
-    connection.close()
+# Test API
+@app.route('/testapi', methods=['GET'])
+def testapi():
+    try:
+        # Send a GET request to the question-engine service
+        response = requests.get(f'{QUESTION_ENGINE_URL}/questions')
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        # Parse the JSON response from the question-engine
+        questions = response.json()
+
+        # Return the questions as a JSON response
+        return jsonify(questions), 200
+
+    except requests.RequestException as e:
+        # Handle any errors that occur during the request
+        return jsonify({'error': 'Failed to retrieve questions'}), 500
     
-    if data:
-        return jsonify({"message": "Data fetched successfully!", "data": data}), 200
-    else:
-        return jsonify({"message": "No data found"}), 404
-
-# Update a specific record by ID
-@app.route('/questions/<int:id>', methods=['PUT'])
-@login_required
-def update_question(id):
-    data = request.json
-    question = data.get('question')
-    option1 = data.get('option1')
-    option2 = data.get('option2')
-    option3 = data.get('option3')
-    option4 = data.get('option4')
-    option5 = data.get('option5')
-    option6 = data.get('option6')
-    correct_answer = data.get('correct')
-
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute(
-        "UPDATE questions SET question = %s, option1 = %s, option2 = %s, option3 = %s, option4 = %s, option5 = %s, option6 = %s, correct = %s WHERE id = %s",
-        (question, option1, option2, option3, option4, option5, option6, correct_answer, id)
-    )
-    connection.commit()
-    connection.close()
-    
-    return jsonify({"message": "Question updated successfully!"}), 200
-
-# Delete a specific record by ID
-@app.route('/questions/<int:id>', methods=['DELETE'])
-@login_required
-def delete_question(id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('DELETE FROM questions WHERE id = %s', (id,))
-    connection.commit()
-    connection.close()
-    
-    return jsonify({"message": "Question deleted successfully!"}), 200
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -28,6 +28,18 @@ services:
       - ./app:/app
     networks:
       - internal
+  
+  question-engine:
+    build: ./question-engine
+    container_name: qe_app_container
+    restart: always
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=cpidb1
+    networks:
+      - internal
 
   nginx:
     image: nginx:latest
@@ -41,6 +53,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - web
+      - question-engine
     networks:
       - internal
 

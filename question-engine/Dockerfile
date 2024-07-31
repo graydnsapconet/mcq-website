@@ -8,8 +8,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 5003
-
 # Create a non-root user and switch to it
 RUN useradd -ms /bin/sh appuser2
 USER appuser2
