@@ -40,3 +40,6 @@ Thumbs.db
 # Ignore other possible local or sensitive files
 *.env
 *.local
+
+# Ignore code used for generating project_structure.txt
+dirstructgen.py
