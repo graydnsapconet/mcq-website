@@ -2,5 +2,4 @@ flask
 flask-login
 flask-bcrypt
 pymysql
-requests
 cryptography
