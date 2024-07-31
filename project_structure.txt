@@ -1,0 +1,17 @@
+    .gitignore
+    docker-compose.yml
+    LICENSE
+    project_structure.txt
+    README.md
+    app/
+        .dockerignore
+        app.py
+        Dockerfile
+        requirements.txt
+        templates/
+            question.html
+    mysql/
+        init.sql
+    nginx/
+        nginx.dev.conf
+        nginx.prod.conf
